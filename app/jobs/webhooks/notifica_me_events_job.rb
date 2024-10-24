@@ -372,6 +372,10 @@ class Webhooks::NotificaMeEventsJob < ApplicationJob
       ActiveRecord::Base.transaction do # rubocop:disable Metrics/BlockLength
         ms = message['contents'].map do |c| # rubocop:disable Metrics/BlockLength
           content = c[c['type']] || ''
+          # Añadir el campo 'item' si está presente mercadolivre
+        if c['item'].present?
+        content += "\nEnlace: #{c['item']}"
+        end
           m = conversation.messages.build(
             content: content,
             account_id: contact_inbox.inbox.account_id,
